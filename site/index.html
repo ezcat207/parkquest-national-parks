@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>National Parks Checklist &amp; Tracker | ParkQuest</title>
 <meta name="description" content="A free, gamified national parks checklist and tracker. Check off all 63 US national parks, track your visited-parks map, earn achievements, and build a check-in streak." />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -49,8 +50,15 @@
   </section>
 
   <section>
-    <h2>Your national park checklist</h2>
-    <div class="toolbar">
+    <div class="section-head">
+      <h2>Your national park checklist</h2>
+      <div class="view-toggle" role="tablist">
+        <button id="view-list" class="view-btn active" role="tab" aria-selected="true">List</button>
+        <button id="view-map" class="view-btn" role="tab" aria-selected="false">Map</button>
+      </div>
+    </div>
+
+    <div class="toolbar" id="list-toolbar">
       <input type="text" id="search" placeholder="Search by park name or state&hellip;" />
       <select id="region-filter"></select>
       <select id="visited-filter">
@@ -59,7 +67,13 @@
         <option value="unvisited">Not visited yet</option>
       </select>
     </div>
+
     <div class="park-grid" id="park-grid"></div>
+
+    <div id="map-view" hidden>
+      <p class="map-hint">Click any pin to toggle whether you've visited that park. Green pins are collected.</p>
+      <div id="map"></div>
+    </div>
   </section>
 
   <footer>
@@ -70,7 +84,9 @@
 
 <div id="toast"></div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="parks.js"></script>
 <script src="app.js"></script>
+<script src="map.js"></script>
 </body>
 </html>

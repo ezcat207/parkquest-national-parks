@@ -147,6 +147,7 @@ function render() {
   renderAchievements();
   renderSuggestion();
   renderGrid();
+  if (typeof window.updateMapMarkers === "function") window.updateMapMarkers();
 }
 
 function renderProgress() {
