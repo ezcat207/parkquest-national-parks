@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>National Parks Checklist &amp; Tracker | ParkQuest</title>
+<meta name="description" content="A free, gamified national parks checklist and tracker. Check off all 63 US national parks, track your visited-parks map, earn achievements, and build a check-in streak." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>National Parks Checklist &amp; Tracker</h1>
+    <p>Mark off every US national park you've visited, watch your progress map fill in, and unlock achievements as you go &mdash; a passport-stamp collection game for the 63 National Parks.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="progress-panel">
+    <div>
+      <div class="progress-headline">
+        <span id="progress-count">0 / 63</span>
+        <span id="progress-pct">0%</span>
+        <span style="color: var(--text-muted); font-size: 13px;">national parks visited</span>
+      </div>
+      <div class="progress-bar"><div class="progress-bar-fill" id="progress-bar-fill"></div></div>
+    </div>
+    <div class="streak-box">
+      Current streak: <strong id="streak-current">0</strong> days
+      <div>Best streak: <span id="streak-best">0</span> days</div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Progress by region</h2>
+    <div class="region-stats" id="region-stats"></div>
+  </section>
+
+  <section>
+    <h2>Suggested next park</h2>
+    <div class="suggestion" id="suggestion"></div>
+  </section>
+
+  <section>
+    <h2>Achievements</h2>
+    <div class="achievements" id="achievements"></div>
+  </section>
+
+  <section>
+    <h2>Your national park checklist</h2>
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="Search by park name or state&hellip;" />
+      <select id="region-filter"></select>
+      <select id="visited-filter">
+        <option value="all">All parks</option>
+        <option value="visited">Visited only</option>
+        <option value="unvisited">Not visited yet</option>
+      </select>
+    </div>
+    <div class="park-grid" id="park-grid"></div>
+  </section>
+
+  <footer>
+    ParkQuest &mdash; a free national park checklist, tracker, and progress map for all 63 US National Parks. Your progress is saved privately in your browser (no account needed).
+  </footer>
+
+</div>
+
+<div id="toast"></div>
+
+<script src="parks.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
