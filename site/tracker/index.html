@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>National Park Tracker — Track Every Park You've Visited | ParkQuest</title>
+<meta name="description" content="A free national park tracker for all 63 US National Parks. Log the date you visited each park, track your progress by region, earn achievements, and keep a check-in streak. No account required." />
+<link rel="canonical" href="https://parkquest-national-parks.pages.dev/tracker/" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body data-nav="tracker">
+
+<header class="hero">
+  <div class="wrap">
+    <h1>National Park Tracker</h1>
+    <p>Keep track of every US national park you've been to. Log your visit dates, follow your completion by region, and let the tracker remember exactly how many of the 63 parks you've collected &mdash; all saved privately in your browser.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="app-root"></div>
+
+  <footer>
+    ParkQuest is a free national park tracker for all 63 US National Parks. Mark parks as visited, record the date, and watch your progress and achievements grow. No sign-up &mdash; your tracker data stays in your browser.
+  </footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/parks.js"></script>
+<script src="/sections.js"></script>
+<script src="/app.js"></script>
+<script src="/map.js"></script>
+</body>
+</html>

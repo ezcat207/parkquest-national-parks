@@ -72,6 +72,29 @@ header.hero .wrap { padding-bottom: 0; }
   font-size: 15px;
 }
 
+.pq-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.pq-nav a {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+.pq-nav a:hover { border-color: var(--green-600); color: var(--green-600); }
+.pq-nav a.active {
+  background: var(--green-600);
+  border-color: var(--green-600);
+  color: #fff;
+}
+
 .progress-panel {
   background: var(--card-bg);
   border: 1px solid var(--border);

@@ -4,89 +4,32 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>National Parks Checklist &amp; Tracker | ParkQuest</title>
-<meta name="description" content="A free, gamified national parks checklist and tracker. Check off all 63 US national parks, track your visited-parks map, earn achievements, and build a check-in streak." />
+<meta name="description" content="A free, gamified national parks checklist and tracker. Check off all 63 US national parks, watch your progress map fill in, earn achievements, and build a check-in streak. No account needed." />
+<link rel="canonical" href="https://parkquest-national-parks.pages.dev/" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="/style.css" />
 </head>
-<body>
+<body data-nav="home">
 
 <header class="hero">
   <div class="wrap">
     <h1>National Parks Checklist &amp; Tracker</h1>
-    <p>Mark off every US national park you've visited, watch your progress map fill in, and unlock achievements as you go &mdash; a passport-stamp collection game for the 63 National Parks.</p>
+    <p>Mark off every US national park you've visited, watch your progress map fill in, and unlock achievements as you go &mdash; a passport-stamp collection game for all 63 National Parks. Free, no sign-up, saved right in your browser.</p>
   </div>
 </header>
 
 <div class="wrap">
-
-  <div class="progress-panel">
-    <div>
-      <div class="progress-headline">
-        <span id="progress-count">0 / 63</span>
-        <span id="progress-pct">0%</span>
-        <span style="color: var(--text-muted); font-size: 13px;">national parks visited</span>
-      </div>
-      <div class="progress-bar"><div class="progress-bar-fill" id="progress-bar-fill"></div></div>
-    </div>
-    <div class="streak-box">
-      Current streak: <strong id="streak-current">0</strong> days
-      <div>Best streak: <span id="streak-best">0</span> days</div>
-    </div>
-  </div>
-
-  <section>
-    <h2>Progress by region</h2>
-    <div class="region-stats" id="region-stats"></div>
-  </section>
-
-  <section>
-    <h2>Suggested next park</h2>
-    <div class="suggestion" id="suggestion"></div>
-  </section>
-
-  <section>
-    <h2>Achievements</h2>
-    <div class="achievements" id="achievements"></div>
-  </section>
-
-  <section>
-    <div class="section-head">
-      <h2>Your national park checklist</h2>
-      <div class="view-toggle" role="tablist">
-        <button id="view-list" class="view-btn active" role="tab" aria-selected="true">List</button>
-        <button id="view-map" class="view-btn" role="tab" aria-selected="false">Map</button>
-      </div>
-    </div>
-
-    <div class="toolbar" id="list-toolbar">
-      <input type="text" id="search" placeholder="Search by park name or state&hellip;" />
-      <select id="region-filter"></select>
-      <select id="visited-filter">
-        <option value="all">All parks</option>
-        <option value="visited">Visited only</option>
-        <option value="unvisited">Not visited yet</option>
-      </select>
-    </div>
-
-    <div class="park-grid" id="park-grid"></div>
-
-    <div id="map-view" hidden>
-      <p class="map-hint">Click any pin to toggle whether you've visited that park. Green pins are collected.</p>
-      <div id="map"></div>
-    </div>
-  </section>
+  <div id="app-root"></div>
 
   <footer>
-    ParkQuest &mdash; a free national park checklist, tracker, and progress map for all 63 US National Parks. Your progress is saved privately in your browser (no account needed).
+    ParkQuest &mdash; a free national parks checklist, tracker, counter, map, and passport-stamp log covering all 63 US National Parks. Your progress is saved privately in your browser (no account needed).
   </footer>
-
 </div>
 
-<div id="toast"></div>
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="parks.js"></script>
-<script src="app.js"></script>
-<script src="map.js"></script>
+<script src="/parks.js"></script>
+<script src="/sections.js"></script>
+<script src="/app.js"></script>
+<script src="/map.js"></script>
 </body>
 </html>

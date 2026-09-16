@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>National Park Map Checklist — Interactive Visited-Parks Map | ParkQuest</title>
+<meta name="description" content="An interactive national park map checklist. See all 63 US National Parks pinned on a map, click a pin to check off the ones you've visited, and watch your visited-parks map fill in. Free, no account." />
+<link rel="canonical" href="https://parkquest-national-parks.pages.dev/map/" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body data-nav="map" data-default-view="map">
+
+<header class="hero">
+  <div class="wrap">
+    <h1>National Park Map Checklist</h1>
+    <p>Every US national park, pinned on one interactive map. Click a pin to check off the parks you've visited and watch your map turn green. Switch to the list any time &mdash; your progress is saved right in your browser.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="app-root"></div>
+
+  <footer>
+    ParkQuest is a free interactive national park map and checklist for all 63 US National Parks. Click pins to mark visited parks, track completion by region, and unlock achievements. No account &mdash; saved in your browser.
+  </footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/parks.js"></script>
+<script src="/sections.js"></script>
+<script src="/app.js"></script>
+<script src="/map.js"></script>
+</body>
+</html>
