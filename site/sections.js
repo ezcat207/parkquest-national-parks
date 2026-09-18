@@ -16,6 +16,7 @@
       '  <a href="/map/" data-nav="map">Map</a>',
       '  <a href="/counter/" data-nav="counter">Counter</a>',
       '  <a href="/passport/" data-nav="passport">Passport</a>',
+      '  <a href="/parks/" data-nav="parks">All parks</a>',
       '</nav>',
 
       '<div class="progress-panel">',

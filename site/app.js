@@ -85,6 +85,12 @@ function visitedCount() {
   return Object.keys(state.visited).length;
 }
 
+// PARK_GUIDES is emitted by build.mjs (guides.js). If it hasn't loaded, assume
+// no guide exists rather than linking to a page that may 404.
+function hasGuide(slug) {
+  return typeof PARK_GUIDES !== "undefined" && PARK_GUIDES.indexOf(slug) !== -1;
+}
+
 function regionStats() {
   const stats = {};
   for (const key of Object.keys(REGIONS)) stats[key] = { total: 0, visited: 0 };
@@ -224,6 +230,7 @@ function renderGrid() {
       <div class="park-actions">
         <button class="btn-toggle" data-slug="${p.slug}">${isVisited ? "Visited ✓" : "Mark as visited"}</button>
         ${isVisited ? `<input type="date" class="visit-date" data-slug="${p.slug}" value="${isVisited}" />` : ""}
+        ${hasGuide(p.slug) ? `<a class="park-link" href="/parks/${p.slug}/">Park guide &rarr;</a>` : ""}
       </div>
     </div>`;
   }).join("") || `<p class="empty">No parks match your filters.</p>`;
