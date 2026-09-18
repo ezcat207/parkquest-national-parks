@@ -145,14 +145,14 @@ header.hero .wrap { padding-bottom: 0; }
   text-align: right;
   font-size: 13px;
   color: var(--text-muted);
-  white-space: nowrap;
 }
-
+.streak-box .streak-label { display: block; }
 .streak-box strong {
-  display: block;
-  font-size: 20px;
+  font-size: 22px;
   color: var(--earth-500);
 }
+.streak-box .streak-best { display: block; font-size: 12px; }
+.progress-label { color: var(--text-muted); font-size: 13px; }
 
 section { margin-top: 32px; }
 
@@ -249,32 +249,88 @@ section h2 {
   color: #fff;
 }
 
+/* The hidden attribute must beat layout rules like `.park-grid { display: grid }`,
+   otherwise toggling views leaves both panes stacked on the page. */
+[hidden] { display: none !important; }
+
 #map {
-  height: 520px;
   border-radius: 14px;
   border: 1px solid var(--border);
+  background: var(--card-bg);
   overflow: hidden;
-  z-index: 0;
+  padding: 6px;
 }
+
+.us-map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.us-land {
+  fill: #e8e3d5;
+  stroke: none;
+}
+.us-states path {
+  fill: none;
+  stroke: #cfc8b4;
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+.us-inset-label {
+  font-size: 15px;
+  fill: var(--text-muted);
+  font-family: inherit;
+}
+
+.us-pin { cursor: pointer; }
+.us-pin-hit { fill: transparent; }
+.us-pin-dot {
+  fill: #ffffff;
+  stroke: #8a8f86;
+  stroke-width: 2;
+  transition: fill 0.15s ease, stroke 0.15s ease, r 0.15s ease;
+}
+.us-pin:hover .us-pin-dot,
+.us-pin:focus .us-pin-dot {
+  stroke: var(--green-600);
+  r: 9;
+}
+.us-pin:focus { outline: none; }
+.us-pin:focus .us-pin-dot { stroke-width: 3; }
+.us-pin.visited .us-pin-dot {
+  fill: #3f8f5f;
+  stroke: var(--green-700);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .us-land { fill: #2c3a30; }
+  :root:not([data-theme="light"]) .us-states path { stroke: #3d4c40; }
+  :root:not([data-theme="light"]) .us-pin-dot { fill: #1a2420; stroke: #7f8a80; }
+}
+:root[data-theme="dark"] .us-land { fill: #2c3a30; }
+:root[data-theme="dark"] .us-states path { stroke: #3d4c40; }
+:root[data-theme="dark"] .us-pin-dot { fill: #1a2420; stroke: #7f8a80; }
+
 .map-hint {
   font-size: 13px;
   color: var(--text-muted);
   margin: 0 0 10px;
 }
-.map-popup { min-width: 180px; }
-.map-popup-meta { font-size: 12px; color: #666; }
-.map-popup-blurb { font-size: 12px; margin: 6px 0 8px; }
-.map-popup-btn {
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--green-600);
-  background: var(--green-600);
-  color: #fff;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
+
+#map-info {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--green-50);
+  border: 1px solid var(--border);
+  font-size: 14px;
+  display: none;
 }
-.leaflet-popup-content { margin: 12px 14px; }
+#map-info.show { display: block; }
+#map-info .mi-state { color: var(--text-muted); font-size: 13px; margin-left: 6px; }
+#map-info .mi-status { float: right; font-weight: 600; font-size: 13px; }
+#map-info .mi-status.yes { color: var(--green-600); }
+#map-info .mi-status.no { color: var(--text-muted); }
 
 .toolbar {
   display: flex;
@@ -403,6 +459,23 @@ footer {
 }
 
 @media (max-width: 560px) {
-  .progress-panel { grid-template-columns: 1fr; }
-  .streak-box { text-align: left; }
+  /* Tighter hero so the tool itself is reachable without a long scroll */
+  header.hero { padding: 24px 16px 22px; }
+  .hero p { font-size: 14px; }
+
+  .progress-panel {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 16px;
+  }
+  .streak-box { text-align: right; }
+  .streak-box .streak-label { font-size: 11px; }
+
+  .section-head { flex-wrap: wrap; }
+  .pq-nav { gap: 5px; }
+  .pq-nav a { padding: 6px 12px; font-size: 12px; }
+
+  #map { padding: 4px; }
+  .park-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .park-blurb { min-height: 0; }
 }

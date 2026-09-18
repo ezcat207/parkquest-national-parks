@@ -1,75 +1,103 @@
-// Map view for ParkQuest — Leaflet-based. Click a pin to toggle visited status.
-// Depends on globals from parks.js (PARKS) and app.js (state, toggleVisit, render).
+// Map view for ParkQuest — self-contained inline SVG (no tiles, no CDN).
+// Uses US_MAP from usmap.js (d3-geo albersUsa projection, Alaska & Hawaii inset).
+// Click a park marker to toggle visited status. Depends on PARKS (parks.js) and
+// state / toggleVisit / render (app.js).
 (function () {
-  let map = null;
-  let markers = {}; // slug -> L.CircleMarker
-  let initialized = false;
+  var built = false;
+  var svgNS = "http://www.w3.org/2000/svg";
 
-  function markerStyle(visited) {
-    return {
-      radius: 7,
-      weight: 2,
-      color: visited ? "#2d5a3d" : "#8a8f86",
-      fillColor: visited ? "#3f8f5f" : "#ffffff",
-      fillOpacity: visited ? 0.95 : 0.85,
-    };
+  function el(name, attrs) {
+    var n = document.createElementNS(svgNS, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
   }
 
-  function popupHtml(p) {
-    const visited = !!state.visited[p.slug];
-    return `<div class="map-popup">
-      <strong>${p.name}</strong><br/>
-      <span class="map-popup-meta">${p.state} · est. ${p.established}</span>
-      <p class="map-popup-blurb">${p.blurb}</p>
-      <button class="map-popup-btn" data-slug="${p.slug}">${visited ? "Visited ✓ — undo" : "Mark as visited"}</button>
-    </div>`;
-  }
+  function buildMap() {
+    if (built) return;
+    var host = document.getElementById("map");
+    if (!host || typeof US_MAP === "undefined") return;
+    built = true;
 
-  function wirePopupButton(p) {
-    return function () {
-      const btn = document.querySelector(`.map-popup-btn[data-slug="${p.slug}"]`);
-      if (btn) {
-        btn.addEventListener("click", function () {
-          toggleVisit(p.slug); // updates state + calls render() -> updateMapMarkers()
-          const mk = markers[p.slug];
-          if (mk) mk.setPopupContent(popupHtml(p));
-        });
-      }
-    };
-  }
+    var svg = el("svg", {
+      viewBox: "0 0 " + US_MAP.width + " " + US_MAP.height,
+      class: "us-map",
+      role: "img",
+      "aria-label": "Map of US national parks",
+    });
 
-  function initMap() {
-    if (initialized) return;
-    initialized = true;
+    // Landmass + state boundaries
+    svg.appendChild(el("path", { d: US_MAP.nation, class: "us-land" }));
+    var g = el("g", { class: "us-states" });
+    US_MAP.states.forEach(function (d) {
+      g.appendChild(el("path", { d: d }));
+    });
+    svg.appendChild(g);
 
-    map = L.map("map", { scrollWheelZoom: false, worldCopyJump: true }).setView([39.5, -98.35], 3);
+    // Territory inset label (American Samoa / Virgin Islands sit outside the projection)
+    var lbl = el("text", { x: 876, y: 578, class: "us-inset-label", "text-anchor": "middle" });
+    lbl.textContent = "Territories";
+    svg.appendChild(lbl);
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      maxZoom: 10,
-      subdomains: "abcd",
-    }).addTo(map);
+    // Park markers
+    var markers = el("g", { class: "us-pins" });
+    PARKS.forEach(function (p) {
+      var xy = US_MAP.points[p.slug];
+      if (!xy) return;
+      var grp = el("g", {
+        class: "us-pin",
+        "data-slug": p.slug,
+        tabindex: "0",
+        role: "button",
+        transform: "translate(" + xy[0] + "," + xy[1] + ")",
+      });
+      // generous invisible hit area (touch-friendly on mobile)
+      grp.appendChild(el("circle", { r: 14, class: "us-pin-hit" }));
+      grp.appendChild(el("circle", { r: 7, class: "us-pin-dot" }));
+      var t = el("title");
+      t.textContent = p.name + " — " + p.state;
+      grp.appendChild(t);
+      markers.appendChild(grp);
+    });
+    svg.appendChild(markers);
 
-    for (const p of PARKS) {
-      const visited = !!state.visited[p.slug];
-      const mk = L.circleMarker([p.lat, p.lng], markerStyle(visited)).addTo(map);
-      mk.bindPopup(popupHtml(p));
-      mk.bindTooltip(p.name, { direction: "top", offset: [0, -6] });
-      mk.on("popupopen", wirePopupButton(p));
-      markers[p.slug] = mk;
+    host.innerHTML = "";
+    host.appendChild(svg);
+
+    function activate(target) {
+      var grp = target.closest(".us-pin");
+      if (!grp) return;
+      var slug = grp.getAttribute("data-slug");
+      toggleVisit(slug);
+      showMapInfo(slug);
     }
+    host.addEventListener("click", function (e) { activate(e.target); });
+    host.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(e.target); }
+    });
+
+    updateMapMarkers();
   }
 
-  // Called from app.js render() so list <-> map stay in sync
+  function showMapInfo(slug) {
+    var box = document.getElementById("map-info");
+    if (!box) return;
+    var p = PARKS.filter(function (x) { return x.slug === slug; })[0];
+    if (!p) return;
+    var visited = !!state.visited[p.slug];
+    box.innerHTML =
+      '<strong>' + p.name + '</strong> <span class="mi-state">' + p.state + '</span>' +
+      '<span class="mi-status ' + (visited ? "yes" : "no") + '">' +
+      (visited ? "Visited ✓" : "Not visited") + "</span>";
+    box.classList.add("show");
+  }
+
+  // Keeps the map in sync when the list view (or anything else) changes state
   window.updateMapMarkers = function () {
-    if (!initialized) return;
-    for (const p of PARKS) {
-      const mk = markers[p.slug];
-      if (!mk) continue;
-      const visited = !!state.visited[p.slug];
-      mk.setStyle(markerStyle(visited));
-      mk.setPopupContent(popupHtml(p));
-    }
+    if (!built) return;
+    PARKS.forEach(function (p) {
+      var grp = document.querySelector('.us-pin[data-slug="' + p.slug + '"]');
+      if (grp) grp.classList.toggle("visited", !!state.visited[p.slug]);
+    });
   };
 
   function showMap() {
@@ -78,11 +106,9 @@
     document.getElementById("view-map").setAttribute("aria-selected", "true");
     document.getElementById("view-list").setAttribute("aria-selected", "false");
     document.getElementById("park-grid").hidden = true;
-    document.getElementById("list-toolbar").style.display = "none";
+    document.getElementById("list-toolbar").hidden = true;
     document.getElementById("map-view").hidden = false;
-    initMap();
-    // Leaflet needs a visible container to size tiles correctly
-    setTimeout(function () { if (map) map.invalidateSize(); }, 50);
+    buildMap();
   }
 
   function showList() {
@@ -92,15 +118,12 @@
     document.getElementById("view-map").setAttribute("aria-selected", "false");
     document.getElementById("map-view").hidden = true;
     document.getElementById("park-grid").hidden = false;
-    document.getElementById("list-toolbar").style.display = "";
+    document.getElementById("list-toolbar").hidden = false;
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("view-map").addEventListener("click", showMap);
     document.getElementById("view-list").addEventListener("click", showList);
-    // If the page was requested with #map (used by the /map variant later), open map first
-    if (location.hash === "#map" || document.body.dataset.defaultView === "map") {
-      showMap();
-    }
+    if (location.hash === "#map" || document.body.dataset.defaultView === "map") showMap();
   });
 })();
