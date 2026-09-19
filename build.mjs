@@ -64,7 +64,7 @@ function parkPage(p, publishedSlugs) {
     "@context": "https://schema.org",
     "@type": "Park",
     name: official,
-    description: nps.description,
+    description: nps.description || nps.weatherInfo,
     address: { "@type": "PostalAddress", addressRegion: states, addressCountry: "US" },
     geo: { "@type": "GeoCoordinates", latitude: p.lat, longitude: p.lng },
     isAccessibleForFree: true,
@@ -92,9 +92,25 @@ function parkPage(p, publishedSlugs) {
         <button id="checkin-btn" class="btn-toggle" data-slug="${p.slug}">Mark as visited</button>
       </div>
 
-      <h2>About ${esc(p.name)}</h2>
-      <p class="park-desc">${esc(nps.description)}</p>
-      <p class="source-note">Description from the <a href="${nps.url}" rel="noopener">official National Park Service page</a> (public domain).</p>
+      ${
+        nps.description
+          ? `<h2>About ${esc(p.name)}</h2>
+      <p class="park-desc">${esc(nps.description)}</p>`
+          : ""
+      }
+      ${
+        nps.weatherInfo
+          ? `<h2>Weather &amp; when to go</h2>
+      <p class="park-desc">${esc(nps.weatherInfo)}</p>`
+          : ""
+      }
+      ${
+        nps.directionsInfo
+          ? `<h2>Getting there</h2>
+      <p class="park-desc">${esc(nps.directionsInfo)}</p>`
+          : ""
+      }
+      <p class="source-note">Park information from the <a href="${nps.url}" rel="noopener">official National Park Service page</a> (public domain). Check the official site for current conditions, closures and reservations before you travel.</p>
 
       <h2>Quick facts</h2>
       <table class="facts">
@@ -186,7 +202,8 @@ function indexPage(publishedSlugs) {
 // --- write -----------------------------------------------------------------
 // Resolve which parks are publishable BEFORE rendering, so cross-links between
 // pages can never point at a park that was skipped.
-const published = PARKS.filter((p) => NPS[p.code] && NPS[p.code].description);
+const hasCopy = (n) => n && (n.description || n.weatherInfo || n.directionsInfo);
+const published = PARKS.filter((p) => hasCopy(NPS[p.code]));
 const skipped = PARKS.filter((p) => !published.includes(p)).map((p) => p.slug);
 const publishedSlugs = new Set(published.map((p) => p.slug));
 

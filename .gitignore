@@ -3,3 +3,6 @@
 node_modules/
 .wrangler/
 excalidraw.log
+.env
+.env.*
+astra/
